@@ -1,0 +1,28 @@
+name: Extract JARVIS ZIP
+
+on:
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Extract project ZIP
+        run: |
+          mkdir -p extracted
+          ZIP=$(find . -maxdepth 1 -iname '*.zip' | head -n 1)
+          if [ -z "$ZIP" ]; then
+            echo "ZIP file not found in repository root"
+            exit 1
+          fi
+          unzip -o "$ZIP" -d extracted
+
+      - name: Upload extracted files
+        uses: actions/upload-artifact@v4
+        with:
+          name: JARVIS-extracted-project
+          path: extracted/
